@@ -26,7 +26,7 @@ public class AppController {
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "/app", method = RequestMethod.POST)
 	public AppResponse createApp(@Valid @RequestBody AppRequest appRequest, HttpServletResponse response) {
 		App app = this.appService.save(appRequest);
 		response.addHeader(HttpHeaders.LOCATION, authBaseURI + "/app/" + app.getId());
