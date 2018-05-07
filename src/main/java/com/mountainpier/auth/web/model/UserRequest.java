@@ -1,5 +1,7 @@
 package com.mountainpier.auth.web.model;
 
+import com.mountainpier.auth.domain.Role;
+
 import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -15,5 +17,8 @@ public class UserRequest {
 	
 	@NotEmpty(message = "Property password is not set")
 	String password;
+	
+	@NotNull(message = "Property role is not set")
+	Role role;
 	
 }

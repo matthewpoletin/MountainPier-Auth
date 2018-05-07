@@ -52,7 +52,8 @@ public class UserServiceImpl implements UserService {
 			.setId(UUID.fromString(userRequest.getId()))
 			.setUsername(userRequest.getUsername())
 			.setPassword(DatatypeConverter.printHexBinary(messageDigest.digest()))
-			.setSalt(salt);
+			.setSalt(salt)
+			.setRole(userRequest.getRole());
 		return userRepository.save(user);
 	}
 	

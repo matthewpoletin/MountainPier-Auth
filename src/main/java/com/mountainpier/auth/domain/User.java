@@ -2,10 +2,7 @@ package com.mountainpier.auth.domain;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Data
@@ -24,7 +21,11 @@ public class User {
 	@Column(name = "users_password")
 	private String password;
 	
-	@Column(name = "salt")
+	@Column(name = "users_salt")
 	private String salt;
+	
+	@Enumerated
+	@Column(name = "users_role", nullable = false, columnDefinition = "smallint")
+	private Role role;
 	
 }
