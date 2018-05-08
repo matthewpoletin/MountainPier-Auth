@@ -3,6 +3,8 @@ package com.mountainpier.auth.domain;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -27,5 +29,8 @@ public class User {
 	@Enumerated
 	@Column(name = "users_role", nullable = false, columnDefinition = "smallint")
 	private Role role;
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<App> apps = new ArrayList<>();
 	
 }

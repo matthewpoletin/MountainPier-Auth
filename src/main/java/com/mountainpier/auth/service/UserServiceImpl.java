@@ -1,5 +1,6 @@
 package com.mountainpier.auth.service;
 
+import com.mountainpier.auth.domain.App;
 import com.mountainpier.auth.domain.User;
 import com.mountainpier.auth.exception.UserCredentialsException;
 import com.mountainpier.auth.repository.UserRepository;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -24,6 +26,12 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
+	public User getUserById(UUID id) {
+		return userRepository.findById(id)
+			.orElseThrow(() -> new EntityNotFoundException("User with id = " + id.toString() + " not found"));
+	}
+	
+	@Override
 	public User findByUsername(String username) {
 		return userRepository.findUserByUsername(username)
 			.orElseThrow(() -> new EntityNotFoundException("User with username = " + username + " not found"));
@@ -32,8 +40,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User checkCredentials(String username, String password) throws UserCredentialsException {
 		try {
-			User user = userRepository.findUserByUsername(username)
-				.orElseThrow(() -> new EntityNotFoundException("User with username = " + username + " not found"));
+			User user = findByUsername(username);
 			MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
 			messageDigest.update((password + user.getSalt()).getBytes("UTF-8"));
 			return DatatypeConverter.printHexBinary(messageDigest.digest()).equals(user.getPassword()) ? user : null;
@@ -58,8 +65,13 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public void delete(Integer id) {
+	public void delete(UUID id) {
 		userRepository.deleteById(id);
+	}
+	
+	@Override
+	public List<App> getApps(UUID userId) {
+		return getUserById(userId).getApps();
 	}
 	
 }

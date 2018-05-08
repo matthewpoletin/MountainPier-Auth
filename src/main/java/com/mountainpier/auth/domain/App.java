@@ -21,4 +21,8 @@ public class App {
 	@Column(name = "apps_name", unique = true)
 	private String name;
 	
+	@JoinColumn(name = "apps_user_id", nullable = false)
+	@ManyToOne
+	private User user;
+	
 }
