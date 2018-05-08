@@ -9,4 +9,5 @@ public interface AppService {
 	
 	App save(AppRequest appRequest);
 	
+	void delete(Integer appId);
 }

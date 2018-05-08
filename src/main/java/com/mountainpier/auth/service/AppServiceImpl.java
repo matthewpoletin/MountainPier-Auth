@@ -40,4 +40,10 @@ public class AppServiceImpl implements AppService {
 			.setUser(user);
 		return appRepository.save(app);
 	}
+	
+	@Override
+	public void delete(Integer appId) {
+		appRepository.deleteById(appId);
+	}
+	
 }

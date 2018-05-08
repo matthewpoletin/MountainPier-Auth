@@ -39,4 +39,10 @@ public class AppController {
 		return new AppResponse(appService.findById(id));
 	}
 	
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@RequestMapping(value = "/app/{appId}", method = RequestMethod.DELETE)
+	public void deleteApp(@PathVariable("appId") Integer appId) {
+		appService.delete(appId);
+	}
+	
 }
