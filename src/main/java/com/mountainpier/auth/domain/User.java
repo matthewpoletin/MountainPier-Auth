@@ -33,4 +33,10 @@ public class User {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<App> apps = new ArrayList<>();
 	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<UserToken> userTokens = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<OAuthToken> oAuthTokens = new ArrayList<>();
+	
 }
