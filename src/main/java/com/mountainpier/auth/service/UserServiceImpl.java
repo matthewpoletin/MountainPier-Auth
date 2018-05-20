@@ -8,6 +8,8 @@ import com.mountainpier.auth.web.model.UserRequest;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.xml.bind.DatatypeConverter;
@@ -23,6 +25,11 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	public UserServiceImpl(UserRepository userRepository) {
 		this.userRepository = userRepository;
+	}
+	
+	@Override
+	public Page<User> getUsers(Integer page, Integer size) {
+		return this.userRepository.findAll(PageRequest.of(page, size));
 	}
 	
 	@Override

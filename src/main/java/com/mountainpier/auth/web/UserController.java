@@ -7,6 +7,7 @@ import com.mountainpier.auth.web.model.UserRequest;
 import com.mountainpier.auth.web.model.UserResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +30,9 @@ public class UserController {
 		this.userService = userService;
 	}
 	
+	
 	@ResponseStatus(HttpStatus.CREATED)
-	@RequestMapping(value = "/user", method = RequestMethod.POST)
+	@RequestMapping(value = "/users", method = RequestMethod.POST)
 	public UserResponse createUser(@Valid @RequestBody UserRequest userRequest,
 								   HttpServletResponse response) throws Exception {
 		User user = this.userService.save(userRequest);
@@ -38,15 +40,23 @@ public class UserController {
 		return new UserResponse(user);
 	}
 	
+	@RequestMapping(value = "/users", method = RequestMethod.GET)
+	public Page<UserResponse> getUsers(@RequestParam(value = "page", required = false) Integer page,
+									   @RequestParam(value = "size", required = false) Integer size) {
+		page = page != null ? page : 0;
+		size = size != null ? size : 25;
+		return userService.getUsers(page, size)
+			.map(UserResponse::new);
+	}
 	
 	
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@RequestMapping(value = "/user/{userId}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/users/{userId}", method = RequestMethod.DELETE)
 	public void deleteUser(@PathVariable("userId") UUID userId) {
 		this.userService.delete(userId);
 	}
 	
-	@RequestMapping(value = "/user/{userId}/apps", method = RequestMethod.GET)
+	@RequestMapping(value = "/users/{userId}/apps", method = RequestMethod.GET)
 	public List<AppResponse> getAppsOfUser(@PathVariable("userId") UUID userId) {
 		return this.userService.getApps(userId)
 			.stream()

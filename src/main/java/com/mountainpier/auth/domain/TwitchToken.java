@@ -2,6 +2,8 @@ package com.mountainpier.auth.domain;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 
 @Data
@@ -28,7 +30,8 @@ public class TwitchToken {
 	@Column(name = "twitch_token_scope")
 	private String scope;
 	
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "twitch_token_user_id", nullable = false, unique = true)
 	private User user;
 	
