@@ -20,12 +20,15 @@ public class TwitchTokenResponse {
 
 	private UUID userId;
 	
+	private Integer twitchId;
+	
 	public TwitchTokenResponse(TwitchToken twitchToken) {
 		this.accessToken = twitchToken.getAccessToken();
 		this.refreshToken = twitchToken.getRefreshToken();
 		this.expiresIn = twitchToken.getExpiresIn();
 		this.scope = twitchToken.getScope();
 		this.userId = twitchToken.getUser().getId();
+		this.twitchId = twitchToken.getTwitchId();
 	}
 	
 }

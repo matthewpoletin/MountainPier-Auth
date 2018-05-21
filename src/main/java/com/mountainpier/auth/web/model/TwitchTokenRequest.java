@@ -19,4 +19,6 @@ public class TwitchTokenRequest {
 	@NotBlank(message = "Property scope not set")
 	private String scope;
 	
+	private Integer twitchId;
+	
 }

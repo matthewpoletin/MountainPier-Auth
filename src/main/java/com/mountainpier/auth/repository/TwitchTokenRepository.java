@@ -10,6 +10,8 @@ public interface TwitchTokenRepository extends
 	
 	TwitchToken getTwitchTokenByUser(User user);
 	
+	TwitchToken getTwitchTokenByTwitchId(Integer twitchId);
+	
 	void deleteTwitchTokenByUser(User user);
 	
 }

@@ -35,4 +35,7 @@ public class TwitchToken {
 	@JoinColumn(name = "twitch_token_user_id", nullable = false, unique = true)
 	private User user;
 	
+	@Column(name = "twitch_token_twitch_id")
+	private Integer twitchId;
+	
 }

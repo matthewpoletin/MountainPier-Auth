@@ -28,20 +28,40 @@ public class TwitchTokenServiceImpl implements TwitchTokenService {
 	@Transactional
 	public TwitchToken createToken(UUID userId, TwitchTokenRequest tokenRequest) {
 		User user = this.userService.getUserById(userId);
-		TwitchToken twitchToken = new TwitchToken()
+		TwitchToken token = new TwitchToken()
 			.setAccessToken(tokenRequest.getAccessToken())
 			.setRefreshToken(tokenRequest.getRefreshToken())
 			.setExpiresIn(tokenRequest.getExpiresIn())
-			.setScope(tokenRequest.getScope());
-		twitchToken.setUser(user);
-		return this.twitchTokenRepository.save(twitchToken);
+			.setScope(tokenRequest.getScope())
+			.setTwitchId(tokenRequest.getTwitchId());
+		token.setUser(user);
+		return this.twitchTokenRepository.save(token);
 	}
 	
 	@Override
 	@Transactional(readOnly = true)
-	public TwitchToken getToken(UUID userId) {
+	public TwitchToken getTokenByUserId(UUID userId) {
 		User user = this.userService.getUserById(userId);
 		return this.twitchTokenRepository.getTwitchTokenByUser(user);
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public TwitchToken getTwitchTokenByTwitchId(Integer twitchId) {
+		return this.twitchTokenRepository.getTwitchTokenByTwitchId(twitchId);
+	}
+	
+	@Override
+	@Transactional
+	public TwitchToken updateTwitchToken(UUID userId, TwitchTokenRequest tokenRequest) {
+		User user = this.userService.getUserById(userId);
+		TwitchToken token = this.getTokenByUserId(userId);
+		token.setAccessToken(tokenRequest.getAccessToken());
+		token.setRefreshToken(tokenRequest.getRefreshToken());
+		token.setExpiresIn(tokenRequest.getExpiresIn());
+		token.setTwitchId(tokenRequest.getTwitchId() != null ? tokenRequest.getTwitchId() : token.getTwitchId());
+		token.setUser(user);
+		return this.twitchTokenRepository.save(token);
 	}
 	
 	@Override
@@ -49,6 +69,20 @@ public class TwitchTokenServiceImpl implements TwitchTokenService {
 	public void deleteToken(UUID userId) {
 		User user = userService.getUserById(userId);
 		this.twitchTokenRepository.deleteTwitchTokenByUser(user);
+	}
+	
+	@Override
+	@Transactional
+	public TwitchToken setTwitchId(UUID userId, Integer twitchId) {
+		TwitchToken token = this.getTokenByUserId(userId);
+		token.setTwitchId(twitchId);
+		return this.twitchTokenRepository.save(token);
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public User getUserByTwitchId(Integer twitchId) {
+		return this.twitchTokenRepository.getTwitchTokenByTwitchId(twitchId).getUser();
 	}
 	
 }
