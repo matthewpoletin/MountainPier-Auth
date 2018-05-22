@@ -6,6 +6,7 @@ import com.mountainpier.auth.exception.UserCredentialsException;
 import com.mountainpier.auth.repository.UserRepository;
 import com.mountainpier.auth.web.model.UserRequest;
 
+import com.mountainpier.auth.web.model.UserUpdateRequest;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,6 +43,13 @@ public class UserServiceImpl implements UserService {
 	public User findByUsername(String username) {
 		return userRepository.findUserByUsername(username)
 			.orElseThrow(() -> new EntityNotFoundException("User with username = " + username + " not found"));
+	}
+	
+	@Override
+	public User updateUser(UUID userId, UserUpdateRequest userRequest) {
+		User user = this.getUserById(userId);
+		user.setUsername(userRequest.getUsername() != null ? userRequest.getUsername() : user.getUsername());
+		return this.userRepository.save(user);
 	}
 	
 	@Override
