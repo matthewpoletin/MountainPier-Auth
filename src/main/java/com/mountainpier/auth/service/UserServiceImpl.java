@@ -4,6 +4,7 @@ import com.mountainpier.auth.domain.App;
 import com.mountainpier.auth.domain.User;
 import com.mountainpier.auth.exception.UserCredentialsException;
 import com.mountainpier.auth.repository.UserRepository;
+import com.mountainpier.auth.web.model.UserCredentialsRequest;
 import com.mountainpier.auth.web.model.UserRequest;
 
 import com.mountainpier.auth.web.model.UserUpdateRequest;
@@ -14,7 +15,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.xml.bind.DatatypeConverter;
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,6 +52,17 @@ public class UserServiceImpl implements UserService {
 	public User updateUser(UUID userId, UserUpdateRequest userRequest) {
 		User user = this.getUserById(userId);
 		user.setUsername(userRequest.getUsername() != null ? userRequest.getUsername() : user.getUsername());
+		return this.userRepository.save(user);
+	}
+	
+	@Override
+	public User updateCredentials(UUID userId, UserCredentialsRequest userRequest) throws Exception {
+		User user = this.getUserById(userId);
+		String salt = RandomStringUtils.randomAlphanumeric(10);
+		MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
+		messageDigest.update((userRequest.getPassword() + salt).getBytes("UTF-8"));
+		user.setPassword(DatatypeConverter.printHexBinary(messageDigest.digest()));
+		user.setSalt(salt);
 		return this.userRepository.save(user);
 	}
 	

@@ -2,11 +2,8 @@ package com.mountainpier.auth.web;
 
 import com.mountainpier.auth.domain.User;
 import com.mountainpier.auth.service.UserService;
-import com.mountainpier.auth.web.model.AppResponse;
-import com.mountainpier.auth.web.model.UserRequest;
-import com.mountainpier.auth.web.model.UserResponse;
+import com.mountainpier.auth.web.model.*;
 
-import com.mountainpier.auth.web.model.UserUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -61,6 +58,12 @@ public class UserController {
 		return new UserResponse(this.userService.updateUser(userId, userRequest));
 	}
 	
+	@RequestMapping(value = "/users/{userId}/credentials", method = RequestMethod.PATCH)
+	public UserResponse updateCredentials(@PathVariable("userId") UUID userId,
+										  @RequestBody @Valid UserCredentialsRequest userRequest) throws Exception {
+		return new UserResponse(this.userService.updateCredentials(userId, userRequest));
+	}
+	
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/users/{userId}", method = RequestMethod.DELETE)
 	public void deleteUser(@PathVariable("userId") UUID userId) {
@@ -74,6 +77,5 @@ public class UserController {
 			.map(AppResponse::new)
 			.collect(Collectors.toList());
 	}
-	
 	
 }
