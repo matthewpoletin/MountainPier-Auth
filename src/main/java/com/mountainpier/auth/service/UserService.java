@@ -33,4 +33,5 @@ public interface UserService {
 	void delete(UUID id);
 	
 	List<App> getApps(UUID userId);
+
 }

@@ -36,7 +36,9 @@ public class OAuthTokenServiceImpl implements OAuthTokenService {
 	private final OAuthTokenRepository oAuthTokenRepository;
 	
 	@Autowired
-	public OAuthTokenServiceImpl(AppService appService, UserService userService, OAuthTokenRepository oAuthTokenRepository) {
+	public OAuthTokenServiceImpl(AppService appService,
+								 UserService userService,
+								 OAuthTokenRepository oAuthTokenRepository) {
 		this.appService = appService;
 		this.userService = userService;
 		this.oAuthTokenRepository = oAuthTokenRepository;
