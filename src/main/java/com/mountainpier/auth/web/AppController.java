@@ -37,21 +37,27 @@ public class AppController {
 	@RequestMapping(value = "/apps", method = RequestMethod.POST)
 	public AppResponse createApp(@RequestBody @Valid AppRequest appRequest,
 								 HttpServletResponse response) {
-		App app = this.appService.save(appRequest);
+		App app = this.appService.createApp(appRequest);
 		response.addHeader(HttpHeaders.LOCATION, authBaseURI + "/apps/" + app.getId());
 		return new AppResponse(app);
 	}
 	
 	@CrossOrigin(origins = "http://localhost")
-	@RequestMapping(value = "/apps/{id}", method = RequestMethod.GET)
-	public AppResponse getApp(@PathVariable Integer id) {
-		return new AppResponse(appService.findById(id));
+	@RequestMapping(value = "/apps/{appId}", method = RequestMethod.GET)
+	public AppResponse getApp(@PathVariable("appId") Integer id) {
+		return new AppResponse(appService.getAppById(id));
+	}
+	
+	@RequestMapping(value = "/apps/{appId}", method = RequestMethod.PATCH)
+	public AppResponse updateApp(@PathVariable("appId") Integer appId,
+								 @RequestBody AppRequest appRequest) {
+		return new AppResponse(this.appService.updateApp(appId, appRequest));
 	}
 	
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/apps/{appId}", method = RequestMethod.DELETE)
 	public void deleteApp(@PathVariable("appId") Integer appId) {
-		appService.delete(appId);
+		appService.deleteApp(appId);
 	}
 	
 }

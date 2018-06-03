@@ -46,7 +46,7 @@ public class OAuthTokenServiceImpl implements OAuthTokenService {
 	
 	@Override
 	public OAuthToken create(OAuthTokenInitialRequest oAuthTokenRequest) throws UserCredentialsException {
-		App app = appService.findById(oAuthTokenRequest.getAppId());
+		App app = appService.getAppById(oAuthTokenRequest.getAppId());
 		if (app == null) { throw new EntityNotFoundException("App '{" + oAuthTokenRequest.getAppId() + "}' not found"); }
 		User user = userService.checkCredentials(oAuthTokenRequest.getUsername(), oAuthTokenRequest.getPassword());
 		OAuthToken token = generateToken(app, user);
@@ -55,7 +55,7 @@ public class OAuthTokenServiceImpl implements OAuthTokenService {
 	
 	@Override
 	public OAuthToken findByAppCode(OAuthTokenCodeRequest oAuthTokenCodeRequest) throws AppCredentialsException {
-		App app = appService.findById(oAuthTokenCodeRequest.getAppId());
+		App app = appService.getAppById(oAuthTokenCodeRequest.getAppId());
 		if (!app.getSecret().equals(oAuthTokenCodeRequest.getAppSecret())) {
 			throw new AppCredentialsException("App '{" + app.getId() + "}' secret not valid");
 		}
@@ -67,7 +67,7 @@ public class OAuthTokenServiceImpl implements OAuthTokenService {
 	
 	@Override
 	public OAuthToken refresh(OAuthTokenRefreshRequest refreshRequest) throws TokenExpireException {
-		App app = appService.findById(Integer.parseInt(refreshRequest.getRefreshToken().substring(
+		App app = appService.getAppById(Integer.parseInt(refreshRequest.getRefreshToken().substring(
 			refreshRequest.getRefreshToken().lastIndexOf(":") + 1)));
 		Jws<Claims> jws = decryptAuthToken(refreshTokenKey, refreshRequest.getRefreshToken());
 		if ((new Date()).after(jws.getBody().getExpiration())) {
@@ -96,7 +96,7 @@ public class OAuthTokenServiceImpl implements OAuthTokenService {
 	@Override
 	public void toStopList(OAuthTokenRequest tokenRequest) throws TokenExpireException, InvalidTokenException {
 		String accessToken = tokenRequest.getAccessToken();
-		App app = appService.findById(Integer.parseInt(accessToken.substring(accessToken.lastIndexOf(":") + 1)));
+		App app = appService.getAppById(Integer.parseInt(accessToken.substring(accessToken.lastIndexOf(":") + 1)));
 		User user = checkAccessToken(tokenRequest);
 		Jws<Claims> jws = decryptAuthToken(accessTokenKey, accessToken);
 		OAuthToken token = new OAuthToken()
@@ -146,7 +146,7 @@ public class OAuthTokenServiceImpl implements OAuthTokenService {
 	
 	private Jws<Claims> decryptAuthToken(String key, String token) {
 		Integer appId = Integer.parseInt(token.substring(token.lastIndexOf(":") + 1));
-		String tokenKey = appService.findById(appId).getSecret() + key;
+		String tokenKey = appService.getAppById(appId).getSecret() + key;
 		return Jwts.parser()
 			.setSigningKey(DatatypeConverter.printBase64Binary(tokenKey.getBytes()))
 			.parseClaimsJws(token.substring(0, token.lastIndexOf(":")));

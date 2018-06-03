@@ -17,12 +17,15 @@ public class AppResponse {
 	
 	private String name;
 	
+	private String redirectUri;
+	
 	private String userId;
 	
 	public AppResponse(App app) {
 		this.id = app.getId();
 		this.secret = app.getSecret();
 		this.name = app.getName();
+		this.redirectUri = app.getRedirectUri();
 		this.userId = app.getUser().getId().toString();
 	}
 	

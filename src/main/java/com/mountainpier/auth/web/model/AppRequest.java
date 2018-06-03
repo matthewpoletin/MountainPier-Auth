@@ -15,4 +15,6 @@ public class AppRequest {
 	@Length(min = 36, max = 36, message = "Not valid UUID")
 	private String userId;
 	
+	private String redirectUri;
+	
 }

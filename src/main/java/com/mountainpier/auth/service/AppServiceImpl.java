@@ -35,23 +35,37 @@ public class AppServiceImpl implements AppService {
 	}
 	
 	@Override
-	public App findById(Integer id) {
+	public App getAppById(Integer id) {
 		return appRepository.findById(id)
 			.orElseThrow(() -> new EntityNotFoundException("App '{ " + id + " }' not found"));
 	}
 	
 	@Override
-	public App save(AppRequest appRequest) {
+	public App createApp(AppRequest appRequest) {
 		User user = userService.getUserById(UUID.fromString(appRequest.getUserId()));
 		App app = new App()
 			.setName(appRequest.getName())
-			.setSecret(RandomStringUtils.randomAlphanumeric(50))
-			.setUser(user);
+			.setRedirectUri(appRequest.getRedirectUri())
+			.setUser(user)
+			.setSecret(RandomStringUtils.randomAlphanumeric(50));
 		return appRepository.save(app);
 	}
 	
 	@Override
-	public void delete(Integer appId) {
+	public App updateApp(Integer appId, AppRequest appRequest) {
+		App app = this.appRepository.getOne(appId);
+		if (appRequest.getUserId() != null) {
+			User user = userService.getUserById(UUID.fromString(appRequest.getUserId()));
+			app.setUser(user);
+		}
+		app.setName(appRequest.getName() != null ? appRequest.getName() : app.getName());
+		app.setRedirectUri(appRequest.getRedirectUri() != null ? appRequest.getRedirectUri() : app.getRedirectUri());
+		app.setSecret(RandomStringUtils.randomAlphanumeric(50));
+		return appRepository.save(app);
+	}
+	
+	@Override
+	public void deleteApp(Integer appId) {
 		appRepository.deleteById(appId);
 	}
 	

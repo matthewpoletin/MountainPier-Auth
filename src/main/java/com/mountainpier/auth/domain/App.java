@@ -23,6 +23,9 @@ public class App {
 	@Column(name = "apps_name", unique = true)
 	private String name;
 	
+	@Column(name = "apps_redirect_uri", unique = true)
+	private String redirectUri;
+	
 	@JoinColumn(name = "apps_user_id", nullable = false)
 	@ManyToOne
 	private User user;

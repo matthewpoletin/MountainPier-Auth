@@ -9,10 +9,12 @@ public interface AppService {
 	
 	Page<App> getApps(Integer page, Integer size);
 	
-	App findById(Integer id);
+	App getAppById(Integer id);
 	
-	App save(AppRequest appRequest);
+	App createApp(AppRequest appRequest);
 	
-	void delete(Integer appId);
+	App updateApp(Integer appId, AppRequest appRequest);
+	
+	void deleteApp(Integer appId);
 	
 }
