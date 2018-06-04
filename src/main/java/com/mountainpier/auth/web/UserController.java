@@ -33,7 +33,7 @@ public class UserController {
 	@RequestMapping(value = "/users", method = RequestMethod.POST)
 	public UserResponse createUser(@Valid @RequestBody UserRequest userRequest,
 								   HttpServletResponse response) throws Exception {
-		User user = this.userService.save(userRequest);
+		User user = this.userService.createUser(userRequest);
 		response.addHeader(HttpHeaders.LOCATION, authBaseURI + "/user/" + user.getId());
 		return new UserResponse(user);
 	}

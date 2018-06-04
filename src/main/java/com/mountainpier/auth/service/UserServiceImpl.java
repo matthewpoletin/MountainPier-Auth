@@ -49,9 +49,24 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
+	public User createUser(UserRequest userRequest) throws Exception {
+		String salt = RandomStringUtils.randomAlphanumeric(10);
+		MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
+		messageDigest.update((userRequest.getPassword() + salt).getBytes("UTF-8"));
+		User user = new User()
+				.setId(UUID.fromString(userRequest.getId()))
+				.setUsername(userRequest.getUsername())
+				.setPassword(DatatypeConverter.printHexBinary(messageDigest.digest()))
+				.setSalt(salt)
+				.setRole(userRequest.getRole());
+		return userRepository.save(user);
+	}
+	
+	@Override
 	public User updateUser(UUID userId, UserUpdateRequest userRequest) {
 		User user = this.getUserById(userId);
 		user.setUsername(userRequest.getUsername() != null ? userRequest.getUsername() : user.getUsername());
+		user.setRole(userRequest.getRole() != null ? userRequest.getRole() : user.getRole());
 		return this.userRepository.save(user);
 	}
 	
@@ -77,20 +92,6 @@ public class UserServiceImpl implements UserService {
 			e.printStackTrace();
 			throw new UserCredentialsException();
 		}
-	}
-	
-	@Override
-	public User save(UserRequest userRequest) throws Exception {
-		String salt = RandomStringUtils.randomAlphanumeric(10);
-		MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
-		messageDigest.update((userRequest.getPassword() + salt).getBytes("UTF-8"));
-		User user = new User()
-			.setId(UUID.fromString(userRequest.getId()))
-			.setUsername(userRequest.getUsername())
-			.setPassword(DatatypeConverter.printHexBinary(messageDigest.digest()))
-			.setSalt(salt)
-			.setRole(userRequest.getRole());
-		return userRepository.save(user);
 	}
 	
 	@Override

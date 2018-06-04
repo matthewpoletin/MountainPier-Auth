@@ -22,7 +22,7 @@ public interface UserService {
 	
 	User findByUsername(String username);
 	
-	User save(UserRequest userRequest) throws Exception;
+	User createUser(UserRequest userRequest) throws Exception;
 	
 	User updateUser(UUID userId, UserUpdateRequest userRequest);
 	
